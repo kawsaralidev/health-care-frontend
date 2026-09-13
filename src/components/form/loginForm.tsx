@@ -18,7 +18,7 @@ import { toast } from "../ui/toast";
 import { Spinner } from "../ui/spinner";
 import { useAuthHooks } from "@/hooks/auth.hook";
 import { useRouter } from "next/navigation";
-import { GoogleLogin } from "@react-oauth/google";
+import GoogleLoginComponent from "../modules/google-login/GoogleLogin";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -26,7 +26,6 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const { mutate: login, isPending: loginPending } = useAuthHooks.useLogin();
-  const { mutate: googleLogin } = useAuthHooks.useGoogleLogin();
 
   const form = useForm({
     defaultValues: {
@@ -64,47 +63,6 @@ const LoginForm = () => {
       });
     },
   });
-
-  const handleGoogleLogin = (credentialResponse: { credential?: string }) => {
-    const idToken = credentialResponse.credential;
-
-    if (!idToken) {
-      toast.add({
-        title: "Google Login Successfully",
-        description: "Welcome back",
-        type: "success",
-      });
-      return;
-    }
-    googleLogin(
-      { idToken },
-      {
-        onSuccess: () => {
-          toast.add({
-            title: "Google Login Successfully",
-            description: "Welcome back",
-            type: "success",
-          });
-          router.replace("/");
-        },
-        onError: () => {
-          toast.add({
-            title: "Google Authorization failed",
-            description: "Something went wrong. Please try again",
-            type: "error",
-          });
-        },
-      },
-    );
-  };
-
-  const handleGoogleError = () => {
-    toast.add({
-      title: "Google Authorization failed",
-      description: "Something went wrong. Please try again",
-      type: "error",
-    });
-  };
 
   return (
     <div className="flex flex-col gap-5">
@@ -198,13 +156,7 @@ const LoginForm = () => {
 
       <FieldSeparator>or continue with</FieldSeparator>
 
-      <GoogleLogin
-        theme="outline"
-        shape="pill"
-        text="continue_with"
-        onSuccess={handleGoogleLogin}
-        onError={handleGoogleError}
-      ></GoogleLogin>
+      <GoogleLoginComponent></GoogleLoginComponent>
     </div>
   );
 };
