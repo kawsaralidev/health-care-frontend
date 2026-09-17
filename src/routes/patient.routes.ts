@@ -1,12 +1,30 @@
-import { SidebarRoute } from "@/types/sidebar.type";
+const prefix = "/patient";
 
-export const patientRoutes: SidebarRoute[] = [
+export const patientRoutes = [
   {
-    title: "Dashboard",
+    title: "Bookings",
     items: [
       {
-        title: "Dashboard",
-        url: "/patient",
+        title: "Overview",
+        url: `${prefix}`,
+      },
+      {
+        title: "Payment History",
+        url: `${prefix}`,
+      },
+    ],
+  },
+  {
+    title: "App Settings",
+    items: [
+      {
+        title: "Routing",
+        url: "#",
+      },
+      {
+        title: "Data Fetching",
+        url: "#",
+        isActive: true,
       },
     ],
   },

@@ -6,13 +6,13 @@ import DashboardSidebar from "./dashboard-sidebar";
 
 interface DashboardShellProps {
   children: ReactNode;
-  role: "SUPER_ADMIN" | "ADMIN" | "DOCTOR" | "PATIENT";
+  userRole: "SUPER_ADMIN" | "ADMIN" | "DOCTOR" | "PATIENT";
 }
 
-const DashboardShell = ({ children, role }: DashboardShellProps) => {
+const DashboardShell = ({ children, userRole }: DashboardShellProps) => {
   return (
     <SidebarProvider>
-      <DashboardSidebar role={role} />
+      <DashboardSidebar userRole={userRole} />
 
       <SidebarInset>{children}</SidebarInset>
     </SidebarProvider>

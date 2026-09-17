@@ -25,13 +25,15 @@ const sidebarRoutes: Partial<Record<UserRole, typeof adminRoutes>> = {
 };
 
 interface DashboardSidebarProps {
-  role: UserRole;
+  userRole: UserRole;
 }
 
-const DashboardSidebar = ({ role }: DashboardSidebarProps) => {
+const DashboardSidebar = ({
+  userRole,
+}: DashboardSidebarProps) => {
   const pathname = usePathname();
 
-  const routes = sidebarRoutes[role] || [];
+  const routes = sidebarRoutes[userRole] || [];
 
   return (
     <Sidebar>

@@ -1,21 +1,29 @@
-import { SidebarRoute } from "@/types/sidebar.type";
+const prefix = "/admin";
 
-export const adminRoutes: SidebarRoute[] = [
+export const adminRoutes = [
   {
-    title: "Dashboard",
+    title: "Management",
     items: [
       {
-        title: "Dashboard",
-        url: "/admin",
+        title: "Overview",
+        url: `${prefix}`,
+      },
+      {
+        title: "Doctor Approval",
+        url: `${prefix}/approve-doctor`,
       },
     ],
   },
   {
-    title: "Doctor Management",
+    title: "App Settings",
     items: [
       {
-        title: "Approve Doctor",
-        url: "/admin/approve-doctor",
+        title: "Routing",
+        url: "#",
+      },
+      {
+        title: "Data Fetching",
+        url: "#",
       },
     ],
   },
