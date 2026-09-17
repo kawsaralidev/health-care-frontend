@@ -3,10 +3,29 @@
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { useAuthHooks } from "@/hooks/auth.hook";
+import {
+  clearAuthenticated,
+  consumeDoctorApprovalToast,
+} from "@/utils/auth-session.util";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
+import { useEffect } from "react";
 
 const Header = () => {
+  useEffect(() => {
+    const shouldShowToast = consumeDoctorApprovalToast();
+
+    if (!shouldShowToast) {
+      return;
+    }
+
+    toast.add({
+      title: "Email Verified Successfully",
+      description:
+        "Admin approval is required before you can log in to your account.",
+      type: "success",
+    });
+  }, []);
   const routes = [
     { name: "Home", url: "/" },
     { name: "About us", url: "/about-us" },
@@ -19,11 +38,14 @@ const Header = () => {
   const handleLogout = () => {
     logout(undefined, {
       onSuccess: () => {
+        clearAuthenticated();
+
         toast.add({
           title: "Tata",
           description: "Logged out successfully",
           type: "success",
         });
+
         queryClient.removeQueries({ queryKey: ["user"] });
       },
       onError: () => {

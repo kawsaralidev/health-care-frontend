@@ -19,6 +19,7 @@ import { Spinner } from "../ui/spinner";
 import { useAuthHooks } from "@/hooks/auth.hook";
 import { useRouter } from "next/navigation";
 import GoogleLoginComponent from "../modules/google-login/GoogleLogin";
+import { setAuthenticated } from "@/utils/auth-session.util";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -44,12 +45,15 @@ const LoginForm = () => {
       };
 
       login(loginData, {
-        onSuccess: (res) => {
+        onSuccess: () => {
+          setAuthenticated();
+
           toast.add({
             title: "Login successfully",
             description: "Welcome back",
             type: "success",
           });
+
           router.replace("/");
         },
 

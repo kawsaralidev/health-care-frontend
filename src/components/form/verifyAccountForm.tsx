@@ -19,30 +19,48 @@ import {
 } from "@/components/ui/input-otp";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "@/components/ui/toast";
+import { useVerifyDoctorAccount } from "@/hooks/doctor.hook";
+import {
+  setAuthenticated,
+  setDoctorApprovalToast,
+} from "@/utils/auth-session.util";
 
 const RESEND_COOLDOWN = 120;
 
-const VerifyAccountForm = () => {
+const VerifyAccountForm = ({
+  mode = "patient",
+}: {
+  mode: "doctor" | "patient";
+}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Get email from registration URL
+  // Get email from verification URL
   const email = searchParams.get("email") || "";
 
   const [otp, setOtp] = useState("");
   const [isInvalid, setIsInvalid] = useState(false);
   const [resendTimer, setResendTimer] = useState(RESEND_COOLDOWN);
 
-  // Handle email verification request
-  const { mutate: verifyAccount, isPending: verifyPending } =
+  // Handle patient email verification
+  const { mutate: verifyPatient, isPending: patientVerifyPending } =
     useAuthHooks.useVerifyAccount();
+
+  // Handle doctor email verification
+  const { mutate: verifyDoctor, isPending: doctorVerifyPending } =
+    useVerifyDoctorAccount();
+
+  const verifyPending = patientVerifyPending || doctorVerifyPending;
+
+  // Select verification function based on account type
+  const verify = mode === "doctor" ? verifyDoctor : verifyPatient;
 
   // Redirect if email is missing
   useEffect(() => {
     if (!email) {
-      router.push("/register");
+      router.push(mode === "doctor" ? "/apply" : "/register");
     }
-  }, [email, router]);
+  }, [email, mode, router]);
 
   // Handle resend cooldown timer
   useEffect(() => {
@@ -65,7 +83,7 @@ const VerifyAccountForm = () => {
     }
 
     // Send email and OTP to backend
-    verifyAccount(
+    verify(
       {
         email,
         otp,
@@ -82,13 +100,30 @@ const VerifyAccountForm = () => {
             return;
           }
 
+          // Doctor verification success
+          if (mode === "doctor") {
+            setDoctorApprovalToast();
+            toast.add({
+              title: "Verification Successful",
+              description:
+                "Your email has been verified successfully. Your application is now pending admin approval.",
+              type: "success",
+            });
+
+            router.push("/");
+
+            return;
+          }
+
+          // Patient verification success
+          setAuthenticated();
           toast.add({
             title: "Verification Successful",
             description: "Your account has been verified.",
             type: "success",
           });
 
-          // Go to login after verification
+          // Go to home after verification
           router.push("/");
         },
 

@@ -4,6 +4,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/toast";
 import { useAuthHooks } from "@/hooks/auth.hook";
+import { setAuthenticated } from "@/utils/auth-session.util";
 
 const GoogleLoginComponent = () => {
   const router = useRouter();
@@ -30,13 +31,14 @@ const GoogleLoginComponent = () => {
       { idToken },
       {
         onSuccess: () => {
+          setAuthenticated();
+
           toast.add({
             title: "Google Login Successfully",
             description: "Welcome back",
             type: "success",
           });
 
-          // Redirect after successful login
           router.replace("/");
         },
 
