@@ -1,5 +1,11 @@
 import apiClient from "@/lib/apiClient";
-import { DoctorApplicationPayload } from "@/types";
+import {
+  ApiResponse,
+  ApproveDoctorPayload,
+  Doctor,
+  DoctorApplicationPayload,
+  DoctorParams,
+} from "@/types";
 
 // Submit doctor application
 const applyAsDoctor = (payload: DoctorApplicationPayload) => {
@@ -30,7 +36,23 @@ const verifyDoctorAccount = (payload: { email: string; otp: string }) => {
   });
 };
 
+// Get all doctors
+const getAllDoctors = (params: DoctorParams) => {
+  return apiClient<ApiResponse<Doctor[]>>("/doctors/all-doctors", {
+    params,
+  });
+};
+// Approve or reject doctor
+const approveDoctor = (payload: ApproveDoctorPayload) => {
+  return apiClient("/doctors/approve-doctor", {
+    method: "POST",
+    body: payload,
+  });
+};
+
 export const doctorApis = {
   applyAsDoctor,
   verifyDoctorAccount,
+  getAllDoctors,
+  approveDoctor,
 };

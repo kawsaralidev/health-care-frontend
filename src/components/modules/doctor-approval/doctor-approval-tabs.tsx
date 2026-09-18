@@ -1,36 +1,43 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import DoctorReviewSheet from "./doctor-review-sheet";
+"use client";
 
-const DoctorApprovalTable = () => {
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import DoctorApprovalTable from "./doctor-approval-table";
+
+const DoctorApprovalTabs = () => {
   return (
-    <div className="rounded-lg border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Name</TableHead>
-            <TableHead className="text-right">Action</TableHead>
-          </TableRow>
-        </TableHeader>
+    <Tabs defaultValue="pending">
+      <TabsList>
+        <TabsTrigger value="pending">Pending</TabsTrigger>
 
-        <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">Mir Hussain</TableCell>
+        <TabsTrigger value="approved">Approved</TabsTrigger>
 
-            <TableCell className="text-right">
-              <DoctorReviewSheet />
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </div>
+        <TabsTrigger value="rejected">Rejected</TabsTrigger>
+
+        <TabsTrigger value="all">All</TabsTrigger>
+      </TabsList>
+
+      {/* Pending doctors */}
+      <TabsContent value="pending">
+        <DoctorApprovalTable status="PENDING" />
+      </TabsContent>
+
+      {/* Approved doctors */}
+      <TabsContent value="approved">
+        <DoctorApprovalTable status="APPROVED" />
+      </TabsContent>
+
+      {/* Rejected doctors */}
+      <TabsContent value="rejected">
+        <DoctorApprovalTable status="REJECTED" />
+      </TabsContent>
+
+      {/* All doctors */}
+      <TabsContent value="all">
+        <DoctorApprovalTable />
+      </TabsContent>
+    </Tabs>
   );
 };
 
-export default DoctorApprovalTable;
+export default DoctorApprovalTabs;

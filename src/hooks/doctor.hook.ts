@@ -1,5 +1,8 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import { doctorApis } from "@/api/doctor.api";
+
+import { ApproveDoctorPayload, DoctorParams } from "@/types";
 
 // Submit doctor application
 const useApplyAsDoctor = () => {
@@ -15,4 +18,33 @@ const useVerifyDoctorAccount = () => {
   });
 };
 
-export { useApplyAsDoctor, useVerifyDoctorAccount };
+// Get all doctors
+const useGetAllDoctors = (params: DoctorParams) => {
+  return useQuery({
+    queryKey: ["doctors", params],
+    queryFn: () => doctorApis.getAllDoctors(params),
+  });
+};
+
+// Approve or reject doctor
+const useApproveDoctor = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: ApproveDoctorPayload) =>
+      doctorApis.approveDoctor(payload),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["doctors"],
+      });
+    },
+  });
+};
+
+export {
+  useApplyAsDoctor,
+  useVerifyDoctorAccount,
+  useGetAllDoctors,
+  useApproveDoctor,
+};
