@@ -16,14 +16,21 @@ import DoctorReviewSheet from "./doctor-review-sheet";
 
 interface DoctorApprovalTableProps {
   status?: DoctorVerificationStatus;
+  searchTerm?: string;
 }
 
-const DoctorApprovalTable = ({ status }: DoctorApprovalTableProps) => {
+const DoctorApprovalTable = ({
+  status,
+  searchTerm,
+}: DoctorApprovalTableProps) => {
   const { data, isLoading, isError } = useGetAllDoctors({
     page: 1,
     limit: 10,
     ...(status && {
       verificationStatus: status,
+    }),
+    ...(searchTerm && {
+      searchTerm,
     }),
   });
 
@@ -75,7 +82,7 @@ const DoctorApprovalTable = ({ status }: DoctorApprovalTableProps) => {
 
                 <TableCell className="text-right">
                   {doctor.verificationStatus === "PENDING" && (
-                    <DoctorReviewSheet />
+                    <DoctorReviewSheet doctor={doctor} />
                   )}
                 </TableCell>
               </TableRow>
