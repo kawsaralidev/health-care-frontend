@@ -60,7 +60,7 @@ const DoctorReviewSheet = ({ doctor }: DoctorReviewSheetProps) => {
     >
       <SheetTrigger>Review</SheetTrigger>
 
-      <SheetContent>
+      <SheetContent className="flex h-full flex-col overflow-hidden">
         <SheetHeader>
           <SheetTitle>Review Doctor Application</SheetTitle>
 
@@ -69,7 +69,7 @@ const DoctorReviewSheet = ({ doctor }: DoctorReviewSheetProps) => {
           </SheetDescription>
         </SheetHeader>
 
-        <div className="space-y-4 px-6">
+        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-6">
           {/* Doctor name */}
           <div>
             <p className="font-medium">Name</p>
@@ -145,7 +145,7 @@ const DoctorReviewSheet = ({ doctor }: DoctorReviewSheetProps) => {
           </div>
         </div>
 
-        <SheetFooter>
+        <SheetFooter className="mt-auto">
           {confirmRejection ? (
             <div className="flex w-full flex-col gap-3">
               <Textarea
