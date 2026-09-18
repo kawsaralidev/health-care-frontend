@@ -1,5 +1,8 @@
 "use client";
 
+import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -8,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import DoctorApprovalTableLoading from "./doctor-approval-table-loading";
 import { useGetAllDoctors } from "@/hooks/doctor.hook";
 import { DoctorVerificationStatus } from "@/types";
 
@@ -19,13 +22,25 @@ interface DoctorApprovalTableProps {
   searchTerm?: string;
 }
 
+const skeletonRows = [
+  "skeleton-1",
+  "skeleton-2",
+  "skeleton-3",
+  "skeleton-4",
+  "skeleton-5",
+];
+
 const DoctorApprovalTable = ({
   status,
   searchTerm,
 }: DoctorApprovalTableProps) => {
+  const [page, setPage] = useState(1);
+
+  const limit = 10;
+
   const { data, isLoading, isError } = useGetAllDoctors({
-    page: 1,
-    limit: 10,
+    page,
+    limit,
     ...(status && {
       verificationStatus: status,
     }),
@@ -34,9 +49,8 @@ const DoctorApprovalTable = ({
     }),
   });
 
-  // Loading state
   if (isLoading) {
-    return <div className="rounded-lg border p-5">Loading doctors...</div>;
+    return <DoctorApprovalTableLoading />;
   }
 
   // Error state
@@ -45,6 +59,7 @@ const DoctorApprovalTable = ({
   }
 
   const doctors = data?.data ?? [];
+  const totalPages = data?.meta?.totalPages ?? 1;
 
   return (
     <div className="rounded-lg border">
@@ -81,8 +96,12 @@ const DoctorApprovalTable = ({
                 <TableCell>{doctor.specialization}</TableCell>
 
                 <TableCell className="text-right">
-                  {doctor.verificationStatus === "PENDING" && (
-                    <DoctorReviewSheet doctor={doctor} />
+                  {!doctor.user.emailVerified ? (
+                    <span className="py-4 text-red-500">Not verified</span>
+                  ) : (
+                    doctor.verificationStatus === "PENDING" && (
+                      <DoctorReviewSheet doctor={doctor} />
+                    )
                   )}
                 </TableCell>
               </TableRow>
@@ -90,6 +109,31 @@ const DoctorApprovalTable = ({
           )}
         </TableBody>
       </Table>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between border-t p-4">
+          <Button
+            variant="outline"
+            onClick={() => setPage((currentPage) => currentPage - 1)}
+            disabled={page === 1}
+          >
+            Previous
+          </Button>
+
+          <p className="text-sm text-muted-foreground">
+            Page {page} of {totalPages}
+          </p>
+
+          <Button
+            variant="outline"
+            onClick={() => setPage((currentPage) => currentPage + 1)}
+            disabled={page === totalPages}
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
