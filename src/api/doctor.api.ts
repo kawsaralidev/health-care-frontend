@@ -5,6 +5,9 @@ import {
   Doctor,
   DoctorApplicationPayload,
   DoctorParams,
+  PublicDoctorParams,
+  PublicDoctorProfile,
+  Schedule,
 } from "@/types";
 
 // Submit doctor application
@@ -50,9 +53,40 @@ const approveDoctor = (payload: ApproveDoctorPayload) => {
   });
 };
 
+// Get all public doctors
+const getAllPublicDoctors = (params: PublicDoctorParams) => {
+  return apiClient<ApiResponse<PublicDoctorProfile[]>>(
+    "/doctors/public/all-doctors",
+    {
+      params,
+    },
+  );
+};
+
+// Get public doctor profile
+const getPublicDoctorProfile = (doctorId: string) => {
+  return apiClient<ApiResponse<PublicDoctorProfile>>(
+    `/doctors/public/${doctorId}`,
+  );
+};
+
+// Get today's schedule by doctor
+const getTodayScheduleByDoctor = (params: {
+  doctorId?: string;
+  page?: number;
+  limit?: number;
+}) => {
+  return apiClient<ApiResponse<Schedule[]>>("/schedule/todays-schedule", {
+    params,
+  });
+};
+
 export const doctorApis = {
   applyAsDoctor,
   verifyDoctorAccount,
   getAllDoctors,
   approveDoctor,
+  getAllPublicDoctors,
+  getPublicDoctorProfile,
+  getTodayScheduleByDoctor,
 };

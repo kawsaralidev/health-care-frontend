@@ -1,25 +1,34 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 
 import { doctorApis } from "@/api/doctor.api";
 
-import { ApproveDoctorPayload, DoctorParams } from "@/types";
+import {
+  ApproveDoctorPayload,
+  DoctorParams,
+  PublicDoctorParams,
+} from "@/types";
 
 // Submit doctor application
-const useApplyAsDoctor = () => {
+export const useApplyAsDoctor = () => {
   return useMutation({
     mutationFn: doctorApis.applyAsDoctor,
   });
 };
 
 // Verify doctor email
-const useVerifyDoctorAccount = () => {
+export const useVerifyDoctorAccount = () => {
   return useMutation({
     mutationFn: doctorApis.verifyDoctorAccount,
   });
 };
 
 // Get all doctors
-const useGetAllDoctors = (params: DoctorParams) => {
+export const useGetAllDoctors = (params: DoctorParams) => {
   return useQuery({
     queryKey: ["doctors", params],
     queryFn: () => doctorApis.getAllDoctors(params),
@@ -27,7 +36,7 @@ const useGetAllDoctors = (params: DoctorParams) => {
 };
 
 // Approve or reject doctor
-const useApproveDoctor = () => {
+export const useApproveDoctor = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -42,9 +51,36 @@ const useApproveDoctor = () => {
   });
 };
 
-export {
-  useApplyAsDoctor,
-  useVerifyDoctorAccount,
-  useGetAllDoctors,
-  useApproveDoctor,
+export const useGetAllPublicDoctors = (params: PublicDoctorParams) => {
+  return useQuery({
+    queryKey: ["public-doctors", params],
+    queryFn: () => doctorApis.getAllPublicDoctors(params),
+  });
+};
+
+export const useSuspenseGetPublicDoctors = (params: PublicDoctorParams) => {
+  return useSuspenseQuery({
+    queryKey: ["public-doctors", params],
+    queryFn: () => doctorApis.getAllPublicDoctors(params),
+  });
+};
+
+export const usePublicDoctorProfile = (doctorId: string) => {
+  return useQuery({
+    queryKey: ["public-doctor", doctorId],
+    queryFn: () => doctorApis.getPublicDoctorProfile(doctorId),
+    enabled: !!doctorId,
+  });
+};
+
+export const useGetTodayScheduleByDoctor = (params: {
+  doctorId?: string;
+  page?: number;
+  limit?: number;
+}) => {
+  return useQuery({
+    queryKey: ["today-schedule", params],
+    queryFn: () => doctorApis.getTodayScheduleByDoctor(params),
+    enabled: !!params.doctorId,
+  });
 };
