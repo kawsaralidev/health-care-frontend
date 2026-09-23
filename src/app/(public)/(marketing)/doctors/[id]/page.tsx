@@ -1,4 +1,5 @@
 import { doctorApis } from "@/api";
+import DoctorBooking from "@/components/modules/doctors/doctor-booking";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -128,6 +129,20 @@ const DoctorProfilePage = async ({ params }: DoctorProfilePageProps) => {
             )}
           </CardContent>
         </Card>
+
+        <div className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Book Appointment</CardTitle>
+
+              <CardDescription>Today&apos;s available slots</CardDescription>
+            </CardHeader>
+
+            <CardContent>
+              <DoctorBooking doctorId={doctor.id} />
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
